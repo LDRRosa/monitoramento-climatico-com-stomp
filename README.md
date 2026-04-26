@@ -1,88 +1,72 @@
-🌡️ Monitor de Temperatura em Tempo Real (WebSockets)
-📌 Sobre o Projeto
+# 🌡️ Monitor de Temperatura em Tempo Real com WebSockets
 
-Este projeto demonstra uma implementação de monitoramento climático em tempo real utilizando Spring Boot, WebSockets (STOMP + SockJS) e a API pública Open-Meteo.
+Este projeto é uma demonstração técnica de uma aplicação de monitorização climática utilizando **Spring Boot**, **WebSockets (STOMP + SockJS)** e a API pública **Open-Meteo**. O sistema realiza o broadcast de temperaturas de 10 cidades brasileiras em tempo real para um dashboard interativo.
 
-O sistema realiza o broadcast de temperaturas de 10 cidades brasileiras a cada 5 segundos, exibindo os dados em um dashboard interativo e dinâmico.
+## 🚀 Tecnologias Utilizadas
 
-🚀 Tecnologias Utilizadas
-☕ Java 21
-🌱 Spring Boot 3.x
-🔌 Spring WebSocket (STOMP & SockJS)
-🌍 Open-Meteo API (dados climáticos gratuitos)
-🎨 Vanilla JavaScript & CSS3
-🛠️ Como Rodar o Projeto
-📋 Pré-requisitos
-JDK 21 instalado
-Maven 3.x ou superior
-▶️ Passo a Passo
-1. Clone o repositório
-git clone https://github.com/seu-usuario/monitoramento-clima.git
-cd monitoramento-clima
-2. Execute a aplicação
-mvn spring-boot:run
-3. Acesse o dashboard
+* **Java 21**
+* **Spring Boot 3.x**
+* **Spring WebSocket** (STOMP & SockJS)
+* **Open-Meteo API** (Dados climáticos gratuitos e sem chave de API)
+* **Vanilla JS & CSS3** (Front-end responsivo)
 
-Abra o navegador e acesse:
+---
 
-http://localhost:8080/index.html
-🔄 Fluxo de Mensagens
+## 🛠️ Como Executar o Projeto
 
-O sistema segue um modelo assíncrono baseado em eventos. Veja o fluxo completo:
+### Pré-requisitos
+* JDK 21 instalado.
+* Maven 3.x ou superior.
 
-⏱️ 1. Agendamento (@Scheduled)
+### Passo a Passo
+1.  **Clone o repositório:**
+    ```bash
+    git clone [https://github.com/seu-usuario/monitoramento-clima.git](https://github.com/seu-usuario/monitoramento-clima.git)
+    cd monitoramento-clima
+    ```
 
-A cada 5 segundos, o servidor:
+2.  **Compile e execute a aplicação:**
+    ```bash
+    mvn spring-boot:run
+    ```
 
-Sorteia uma cidade de uma lista pré-definida
-Utiliza suas coordenadas (latitude/longitude)
-🌐 2. Consumo da API
-Utiliza RestTemplate para consumir a API Open-Meteo
-Força Locale.US para garantir formatação correta das coordenadas
-⚙️ 3. Processamento
-Extrai:
-Temperatura
-weathercode
-Converte o código em descrição amigável (ex: "Céu Limpo")
-📡 4. Broadcast (STOMP)
-O servidor envia os dados via WebSocket para:
-/topic/clima
-💻 5. Recepção no Cliente
-O navegador recebe os dados via SockJS
-Atualiza dinamicamente o card da cidade
-Aplica cores baseadas na temperatura:
-🔴 > 25°C → Vermelho
-🔵 ≤ 25°C → Azul
-📁 Estrutura de Pastas
-src/
- └── main/
-     ├── java/.../
-     │   ├── model/
-     │   │   └── Cidades.java
-     │   ├── services/
-     │   │   └── ClimaService.java
-     │   └── config/
-     │       └── WebSocketConfig.java
-     │
-     └── resources/
-         └── static/
-             └── index.html
-📝 Notas de Implementação
-🌍 CORS
+3.  **Aceda ao Dashboard:**
+    Abra o seu navegador e aceda a:
+    `http://localhost:8080/index.html`
 
-O servidor está configurado para aceitar requisições de qualquer origem, facilitando testes locais.
+---
 
-🎨 Estilização
-Utiliza CSS Grid
-Layout responsivo adaptável a diferentes resoluções
-🌐 Localização (Locale)
-Uso de Locale.US na montagem da URL da API
-Evita erros 400 Bad Request causados por vírgulas no padrão PT-BR
-💡 Possíveis Melhorias
-📊 Adicionar gráficos históricos de temperatura
-🌎 Permitir seleção dinâmica de cidades
-🔔 Sistema de alertas climáticos
-☁️ Deploy em cloud (AWS, Render, etc.)
-📄 Licença
+## 🔄 Fluxo de Mensagens e Lógica
 
-Este projeto é livre para uso acadêmico e aprendizado.
+O projeto utiliza uma arquitetura de mensageria assíncrona. Abaixo descreve-se o ciclo de vida de uma atualização:
+
+1.  **Agendamento (`@Scheduled`):** No servidor, uma tarefa automática é disparada a cada 5 segundos.
+2.  **Sorteio e Localização:** O serviço escolhe aleatoriamente uma cidade da lista de 10 cidades pré-definidas (que contém Nome, Latitude e Longitude).
+3.  **Consumo de API Externa:** O servidor faz um pedido HTTP `GET` à API Open-Meteo. 
+    * *Nota:* É utilizado `Locale.US` na formatação da URL para garantir que as coordenadas usem o ponto decimal (ex: `-16.74`) em vez da vírgula, evitando erros de `400 Bad Request`.
+4.  **Processamento de Dados:** O JSON de resposta é mapeado e o `weathercode` é traduzido para uma descrição legível (ex: "Céu Limpo", "Chuvoso").
+5.  **Broadcast via WebSocket:** O servidor envia o objeto de dados (Payload) para o tópico `/topic/clima` através do `SimpMessagingTemplate`.
+6.  **Atualização no Cliente (Front-end):**
+    * O cliente Web está subscrito ao tópico `/topic/clima`.
+    * Ao receber os dados, o JavaScript localiza o card específico da cidade através do ID.
+    * Os valores são atualizados e a cor do card muda dinamicamente: **Vermelho** para calor (> 25°C) e **Azul** para frio (≤ 25°C).
+
+---
+
+## 📁 Estrutura de Pastas
+
+* `src/main/java/.../model/Cidades.java`: Modelo de dados com coordenadas reais.
+* `src/main/java/.../services/ClimaService.java`: Lógica de agendamento, consumo de API e envio de mensagens.
+* `src/main/java/.../config/WebSocketConfig.java`: Configuração do broker STOMP e endpoint SockJS.
+* `src/main/resources/static/index.html`: Interface visual (HTML/CSS/JS).
+
+---
+
+## 📝 Notas Técnicas
+
+* **Interatividade:** O dashboard inicia com todos os cards em estado de "Aguardando...". À medida que o servidor envia atualizações, os cards ganham cor e dados.
+* **Ambiguidade no Java:** Foi aplicado um cast para `(Object)` no método `convertAndSend` para resolver conflitos de sobrecarga de métodos do Spring Framework.
+* **Responsividade:** O layout utiliza CSS Grid, adaptando-se automaticamente ao tamanho da janela do navegador.
+
+---
+*Projeto desenvolvido para fins educacionais sobre comunicação Full-Duplex em Java.*
