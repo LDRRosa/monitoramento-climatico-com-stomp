@@ -69,4 +69,13 @@ O projeto utiliza uma arquitetura de mensageria assíncrona. Abaixo descreve-se 
 * **Responsividade:** O layout utiliza CSS Grid, adaptando-se automaticamente ao tamanho da janela do navegador.
 
 ---
-*Projeto desenvolvido para fins educacionais sobre comunicação Full-Duplex em Java.*
+
+## 📸 Prints do Projeto
+
+Nesta seção, pode ver o funcionamento do sistema tanto no terminal (backend) quanto na interface do utilizador (frontend).
+
+### Painel de Monitorização (Frontend)
+![Painel de Monitorização](src/Prints/Painel.png)
+
+### Log do Servidor (Console/Backend)
+![Console do Spring Boot](src/Prints/Console.png)
