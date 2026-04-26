@@ -1,10 +1,7 @@
 🌡️ Monitor de Temperatura em Tempo Real (WebSockets)
 Este projeto demonstra uma implementação de monitoramento climático utilizando Spring Boot, WebSockets (STOMP + SockJS) e a API pública Open-Meteo. O sistema realiza o broadcast de temperaturas de 10 cidades brasileiras em intervalos de 5 segundos para um dashboard interativo.
 
---
-
 🚀 Tecnologias Utilizadas
-
 Java 21
 
 Spring Boot 3.x
@@ -14,8 +11,6 @@ Spring WebSocket (STOMP & SockJS)
 Open-Meteo API (Dados climáticos gratuitos)
 
 Vanilla JS & CSS3 (Front-end)
-
---
 
 🛠️ Como Rodar o Projeto
 Pré-requisitos
@@ -37,8 +32,6 @@ Acesse o Dashboard:
 Abra o seu navegador e acesse:
 http://localhost:8080/index.html
 
---
-
 🔄 Fluxo de Mensagens
 O projeto segue um fluxo de comunicação assíncrona baseada em eventos. Abaixo, a explicação detalhada de cada etapa:
 
@@ -52,8 +45,6 @@ Broadcast (STOMP): O objeto de dados é convertido em JSON e enviado para o tóp
 
 Recepção no Cliente: O navegador, conectado via SockJS, recebe o payload e identifica o card da cidade através do ID do elemento, atualizando apenas os valores necessários e alterando a cor do card (Vermelho para > 25°C, Azul para ≤ 25°C).
 
---
-
 📁 Estrutura de Pastas Principal
 src/main/java/.../model/Cidades.java: Classe POJO para representar os dados das cidades.
 
@@ -62,8 +53,6 @@ src/main/java/.../services/ClimaService.java: Lógica de consumo da API e dispar
 src/main/java/.../config/WebSocketConfig.java: Configuração do Broker e Endpoints.
 
 src/main/resources/static/index.html: Interface do dashboard com lógica de atualização em tempo real.
-
--
 
 📝 Notas de Implementação
 CORS: O servidor está configurado para aceitar conexões de qualquer origem para facilitar testes locais.
